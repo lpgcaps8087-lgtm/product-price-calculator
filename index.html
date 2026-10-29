@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123b5d">
+<title>Product Price Calculator</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--navy:#123b5d;--blue:#176b9a;--bg:#f3f6fa;--card:#fff;--ink:#172b3a;--muted:#607487;--line:#dce5ed;--accent:#e8f4fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:linear-gradient(130deg,#123b5d,#176b9a);color:#fff;padding:24px 18px 28px}header h1{font-size:1.45rem;margin:0 0 5px}header p{margin:0;color:#e1eef6;font-size:.93rem}
+main{max-width:760px;margin:auto;padding:14px 12px 36px}.section{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:16px;margin:0 0 13px;box-shadow:0 3px 12px #183c5510}
+.section h2{font-size:1.05rem;margin:0 0 14px;color:var(--navy);display:flex;gap:9px;align-items:center}
+.num{background:var(--accent);color:var(--blue);border-radius:8px;padding:4px 8px;font-size:.8rem;font-weight:800}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{min-width:0}.field label{display:block;font-size:.83rem;color:var(--muted);margin:0 0 5px}.field input{width:100%;padding:11px 10px;border:1px solid #cbd8e3;border-radius:9px;background:#fff;font:inherit;color:var(--ink)}.field input:focus{outline:2px solid #9bd4f2;border-color:var(--blue)}
+.help{font-size:.78rem;color:var(--muted);margin-top:4px}.wide{grid-column:1/-1}.results{background:#f7fbfe;border:1px solid #cfe4f1;border-radius:11px;padding:12px;margin-top:12px}.resultrow{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #e2edf4}.resultrow:last-child{border-bottom:0}.resultrow strong{font-variant-numeric:tabular-nums;text-align:right}.heroresult{background:var(--navy);color:#fff;border-radius:12px;padding:15px;margin-top:12px}.heroresult small{color:#d6e7f2}.heroresult strong{display:block;font-size:1.8rem;margin-top:2px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.btn{border:0;border-radius:10px;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer}.primary{background:var(--blue);color:white}.secondary{background:#e2ebf2;color:var(--navy)}.foot{font-size:.78rem;color:var(--muted);text-align:center;padding:10px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}header{padding-top:20px}.section{padding:14px}}
+</style>
+</head>
+<body>
+<header><h1>Product Price Calculator</h1><p>Manufacturing cost, profit margin and GST — all in one place</p></header>
+<main>
+<section class="section">
+<h2><span class="num">01</span> Product details</h2>
+<div class="grid">
+<div class="field"><label for="article">Article name</label><input id="article" placeholder="e.g. Bucket"></div>
+<div class="field"><label for="weight">Article weight (grams)</label><input id="weight" type="number" min="0" step="any" value="100"><div class="help">Assumed from your handwritten “Article wt.”</div></div>
+<div class="field"><label for="qty">Order quantity (pieces)</label><input id="qty" type="number" min="0" step="1" value="1000"></div>
+<div class="field"><label for="pack">Packing cost (₹/piece)</label><input id="pack" type="number" min="0" step="any" value="0"></div>
+</div></section>
+<section class="section">
+<h2><span class="num">02</span> Material and finishing</h2>
+<div class="grid">
+<div class="field"><label for="material">Material rate (₹/kg)</label><input id="material" type="number" min="0" step="any" value="100"></div>
+<div class="field"><label for="allowance">Injected material allowance (%)</label><input id="allowance" type="number" min="0" step="any" value="2"></div>
+<div class="field"><label for="spray">Spray rate (₹/piece)</label><input id="spray" type="number" min="0" step="any" value="0"></div>
+<div class="field"><label for="other">Other expenses (₹/piece)</label><input id="other" type="number" min="0" step="any" value="0"></div>
+</div></section>
+<section class="section">
+<h2><span class="num">03</span> Production expenses</h2>
+<div class="grid">
+<div class="field"><label for="cycle">Cycle time (seconds)</label><input id="cycle" type="number" min="0" step="any" value="30"></div>
+<div class="field"><label for="cavity">Mould cavity (pieces/cycle)</label><input id="cavity" type="number" min="1" step="1" value="1"></div>
+<div class="field"><label for="machine">Machine cost (₹/hour)</label><input id="machine" type="number" min="0" step="any" value="0"></div>
+<div class="field"><label for="labour">Labour cost (₹/hour)</label><input id="labour" type="number" min="0" step="any" value="0"></div>
+<div class="field"><label for="electric">Electric cost (₹/hour)</label><input id="electric" type="number" min="0" step="any" value="0"></div>
+<div class="field"><label for="rent">Rent (₹/day)</label><input id="rent" type="number" min="0" step="any" value="0"></div>
+<div class="field"><label for="hours">Production hours per day</label><input id="hours" type="number" min="0.1" step="any" value="8"></div>
+</div><div class="help">Production cost per piece uses cycle time ÷ mould cavity. Daily rent is spread across estimated daily output.</div></section>
+<section class="section">
+<h2><span class="num">04</span> Profit and tax</h2>
+<div class="grid">
+<div class="field"><label for="profit">Profit margin (%)</label><input id="profit" type="number" min="0" step="any" value="15"></div>
+<div class="field"><label for="gst">GST rate (%)</label><input id="gst" type="number" min="0" step="any" value="18"></div>
+</div></section>
+<section class="section" id="priceSection">
+<h2><span class="num">05</span> Your calculated price</h2>
+<div class="results" id="results" aria-live="polite"></div>
+<div class="heroresult"><small>Selling price per piece including GST</small><strong id="finalPrice">₹0.00</strong></div>
+<div class="actions"><button class="btn primary" id="share">Share / copy summary</button><button class="btn secondary" id="reset">Reset values</button></div>
+<div class="help">This is an estimate. Check the inputs and your actual production yield before quoting a customer.</div>
+</section>
+<div class="foot">Calculator works offline after the app has been hosted and opened once on a supported browser.</div>
+</main>
+<script>
+const ids=['article','weight','qty','pack','material','allowance','spray','other','cycle','cavity','machine','labour','electric','rent','hours','profit','gst'];
+const $=id=>document.getElementById(id), n=id=>Math.max(0,Number($(id).value)||0), money=x=>'₹'+(Number.isFinite(x)?x:0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+function calc(){
+ const weight=n('weight'), qty=n('qty'), rate=n('material'), allowance=n('allowance')/100;
+ const materialCost=(weight/1000)*rate*(1+allowance);
+ const cycle=n('cycle'), cavity=Math.max(1,n('cavity')), hours=n('hours');
+ const piecesPerHour=cycle>0?3600*cavity/cycle:0, piecesPerDay=piecesPerHour*hours;
+ const prodPerPiece=piecesPerHour>0?(n('machine')+n('labour')+n('electric'))/piecesPerHour:0;
+ const rentPerPiece=piecesPerDay>0?n('rent')/piecesPerDay:0;
+ const packing=n('pack'), spray=n('spray'), other=n('other');
+ const cost=materialCost+spray+prodPerPiece+rentPerPiece+packing+other;
+ const profit=cost*n('profit')/100, sell=cost+profit, gst=sell*n('gst')/100, incl=sell+gst;
+ const rows=[
+ ['Material cost incl. allowance',materialCost],
+ ['Spray cost',spray],
+ ['Machine + labour + electricity',prodPerPiece],
+ ['Rent allocation per piece',rentPerPiece],
+ ['Packing cost',packing],
+ ['Other expenses',other],
+ ['Total manufacturing cost / piece',cost],
+ ['Profit / piece',profit],
+ ['Selling price before GST',sell],
+ ['GST / piece',gst],
+ ['Order total incl. GST',incl*qty]
+ ];
+ $('results').innerHTML=rows.map((r,i)=>`<div class="resultrow"><span>${r[0]}</span><strong>${money(r[1])}</strong></div>`).join('');
+ $('finalPrice').textContent=money(incl);
+ window.currentSummary=`Product Price Calculator\nArticle: ${$('article').value||'Not specified'}\nArticle weight: ${weight} g\nOrder quantity: ${qty} pieces\nManufacturing cost/piece: ${money(cost)}\nSelling price before GST/piece: ${money(sell)}\nGST: ${n('gst')}%\nSelling price including GST/piece: ${money(incl)}\nOrder total including GST: ${money(incl*qty)}`;
+}
+ids.forEach(id=>$(id).addEventListener('input',calc));
+$('reset').addEventListener('click',()=>{document.querySelectorAll('input').forEach(el=>el.value=el.defaultValue);calc()});
+$('share').addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({title:'Product price calculation',text:window.currentSummary})}else if(navigator.clipboard){await navigator.clipboard.writeText(window.currentSummary);alert('Summary copied.')}else{prompt('Copy this summary:',window.currentSummary)}}catch(e){}});
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+calc();
+</script>
+</body></html>
